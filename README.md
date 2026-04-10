@@ -37,14 +37,14 @@ Cricket Easy Scorecard is a full-stack CPSC 2650 final project built with HTML5,
 
 ### Part V: Git Version Control
 
-- The course requirement expects this project folder to be tracked in Git and connected to a remote repository before submission.
-- Git setup is separate from the running website. If you are submitting this project, initialize Git in this folder, connect a remote, and keep commit history for team contributions.
+- This project folder is tracked in Git and connected to the GitHub remote repository for submission.
+- The repository now includes commit history on `main`; continue making clear commits for fixes or improvements before final submission.
 
 ## Project Structure
 
 - `app.js` - Express server, page routing, API routing, session setup
 - `config/config.js` - singleton configuration module and environment loading
-- `controllers/` - authentication, admin, API, match, and home controllers
+- `controllers/` - authentication, admin, and API controllers
 - `middleware/` - authentication and accountability logging middleware
 - `models/` - MongoDB model modules for users, matches, teams, logs, and shared DB access
 - `utils/factory.js` - factory-method implementation for mapper objects
