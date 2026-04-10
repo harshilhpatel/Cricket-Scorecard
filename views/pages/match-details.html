@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Details | Cricket Easy Scorecard</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-trophy-fill text-warning me-2"></i>
+                Cricket Scorecard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="bi bi-house-door me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/live-scores.html">
+                            <i class="bi bi-broadcast me-1"></i>Live Scores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/pages/matches.html">
+                            <i class="bi bi-calendar-event me-1"></i>Matches
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/about.html">
+                            <i class="bi bi-info-circle me-1"></i>About
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav" id="authNav">
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center">
+                    <a href="/pages/matches.html" class="btn btn-outline-secondary btn-sm me-3">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a href="/pages/matches.html">Matches</a></li>
+                            <li class="breadcrumb-item active" aria-current="page" id="breadcrumbTitle">Loading...</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div id="adminActions" style="display: none;">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-gear me-2"></i>Actions
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#updateScoreModal">
+                                    <i class="bi bi-pencil me-2"></i>Update Score
+                                </button>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteMatchModal">
+                                    <i class="bi bi-trash me-2"></i>Delete Match
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="loadingState" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="text-muted mt-3">Loading match details...</p>
+            </div>
+            
+            <div id="matchContent" style="display: none;">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center py-3" id="matchHeader">
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0" id="team1Name">Team 1</h5>
+                                    <span class="badge bg-light text-primary" id="team1Country"></span>
+                                </div>
+                            </div>
+                            <div class="card-body text-center py-4">
+                                <div class="display-4 fw-bold text-primary mb-2" id="team1Score">0/0</div>
+                                <p class="text-muted mb-0"><i class="bi bi-clock me-1"></i><span id="team1Overs">0</span> overs</p>
+                                <p class="text-muted mt-2" id="team1RunRate"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-header bg-success text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0" id="team2Name">Team 2</h5>
+                                    <span class="badge bg-light text-success" id="team2Country"></span>
+                                </div>
+                            </div>
+                            <div class="card-body text-center py-4">
+                                <div class="display-4 fw-bold text-success mb-2" id="team2Score">0/0</div>
+                                <p class="text-muted mb-0"><i class="bi bi-clock me-1"></i><span id="team2Overs">0</span> overs</p>
+                                <p class="text-muted mt-2" id="team2RunRate"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Match Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td class="text-muted"><i class="bi bi-calendar me-2"></i>Date:</td>
+                                        <td id="matchDate">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted"><i class="bi bi-clock me-2"></i>Time:</td>
+                                        <td id="matchTime">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted"><i class="bi bi-geo-alt me-2"></i>Venue:</td>
+                                        <td id="matchVenue">-</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td class="text-muted"><i class="bi bi-diamond me-2"></i>Match Type:</td>
+                                        <td id="matchType">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted"><i class="bi bi-coin me-2"></i>Toss:</td>
+                                        <td id="matchToss">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted"><i class="bi bi-flag me-2"></i>Status:</td>
+                                        <td id="matchStatus">-</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="errorState" class="text-center py-5" style="display: none;">
+                <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
+                <h3 class="mt-4">Match Not Found</h3>
+                <p class="text-muted">The match you are looking for does not exist.</p>
+                <a href="/pages/matches.html" class="btn btn-primary">View All Matches</a>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal fade" id="updateScoreModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="updateScoreForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Update Score</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="mb-3" id="modalTeam1Name">Team 1</h6>
+                                <div class="row g-2">
+                                    <div class="col-4">
+                                        <label class="form-label small">Score</label>
+                                        <input type="number" class="form-control" id="team1ScoreInput" value="0">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label small">Wickets</label>
+                                        <input type="number" class="form-control" id="team1WicketsInput" value="0">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label small">Overs</label>
+                                        <input type="number" step="0.1" class="form-control" id="team1OversInput" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-3" id="modalTeam2Name">Team 2</h6>
+                                <div class="row g-2">
+                                    <div class="col-4">
+                                        <label class="form-label small">Score</label>
+                                        <input type="number" class="form-control" id="team2ScoreInput" value="0">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label small">Wickets</label>
+                                        <input type="number" class="form-control" id="team2WicketsInput" value="0">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label small">Overs</label>
+                                        <input type="number" step="0.1" class="form-control" id="team2OversInput" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label class="form-label">Match Status</label>
+                            <select class="form-select" id="matchStatusInput">
+                                <option value="upcoming">Upcoming</option>
+                                <option value="live">Live</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Score</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteMatchModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="deleteMatchForm">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Delete Match</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this match?</p>
+                        <p class="fw-bold" id="deleteMatchTitle">Match Title</p>
+                        <p class="text-danger mb-0">This action cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Delete Match</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="bi bi-trophy-fill text-warning me-2"></i>Cricket Scorecard</h5>
+                    <p class="text-muted">Your ultimate destination for live cricket scores.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-muted text-decoration-none">Home</a></li>
+                        <li><a href="/pages/live-scores.html" class="text-muted text-decoration-none">Live Scores</a></li>
+                        <li><a href="/pages/matches.html" class="text-muted text-decoration-none">Matches</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <p class="text-muted mt-3 mb-0">&copy; 2026 Cricket Scorecard</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let matchId = null;
+        let matchData = null;
+        let matchSource = 'local';
+
+        function getCurrentUser() {
+            try {
+                return JSON.parse(localStorage.getItem('user'));
+            } catch (error) {
+                localStorage.removeItem('user');
+                return null;
+            }
+        }
+
+        function buildLoginRedirectUrl() {
+            return `/pages/login.html?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        }
+
+        function redirectToLogin() {
+            window.location.replace(buildLoginRedirectUrl());
+        }
+
+        function getMatchIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        function getMatchSourceFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('source') || 'local';
+        }
+
+        function checkAuth() {
+            const user = getCurrentUser();
+            const authNav = document.getElementById('authNav');
+            const adminActions = document.getElementById('adminActions');
+            
+            if (user) {
+                authNav.innerHTML = `
+                    ${user.role === 'admin' ? `
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/admin-dashboard.html">
+                            <i class="bi bi-shield-lock me-1"></i>Admin
+                        </a>
+                    </li>` : ''}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i>${user.username}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><span class="dropdown-item-text text-muted">${user.fullName}</span></li>
+                            <li><span class="dropdown-item-text text-muted small">Role: ${user.role}</span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                `;
+                
+                if (user.role === 'admin' && adminActions && matchSource !== 'external') {
+                    adminActions.style.display = 'block';
+                }
+
+                return true;
+            } else {
+                authNav.innerHTML = `
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/login.html">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary btn-sm text-white ms-lg-2 px-3" href="/pages/register.html">
+                            <i class="bi bi-person-plus me-1"></i>Register
+                        </a>
+                    </li>
+                `;
+
+                return false;
+            }
+        }
+
+        async function logout() {
+            try {
+                await fetch('/logout', { cache: 'no-store' });
+            } catch (error) {
+                console.warn('Logout request failed:', error);
+            }
+
+            localStorage.removeItem('user');
+            window.location.href = '/';
+        }
+
+        function getScoreDisplay(team) {
+            if (team?.scoreDisplay) {
+                return team.scoreDisplay;
+            }
+
+            if (team?.score !== undefined && team?.score !== null) {
+                let scoreText = `${team.score}`;
+
+                if (team?.wickets !== undefined && team?.wickets !== null) {
+                    scoreText += `/${team.wickets}`;
+                }
+
+                if (team?.overs !== undefined && team?.overs !== null && team?.overs !== '') {
+                    scoreText += ` (${team.overs})`;
+                }
+
+                return scoreText;
+            }
+
+            return 'Yet to bat';
+        }
+
+        async function loadMatchDetails() {
+            matchId = getMatchIdFromUrl();
+            matchSource = getMatchSourceFromUrl();
+            
+            if (!matchId) {
+                showError();
+                return;
+            }
+            
+            try {
+                const requestUrl = matchSource === 'external'
+                    ? `/api/external/cricket?endpoint=match&id=${encodeURIComponent(matchId)}`
+                    : `/api/matches/${matchId}`;
+                const response = await fetch(requestUrl);
+
+                if (response.status === 401) {
+                    redirectToLogin();
+                    return;
+                }
+
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    matchData = result.data;
+                    displayMatchDetails(matchData);
+                } else {
+                    showError();
+                }
+            } catch (error) {
+                console.error('Error loading match:', error);
+                showError();
+            }
+        }
+
+        function displayMatchDetails(match) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('matchContent').style.display = 'block';
+            
+            document.getElementById('breadcrumbTitle').textContent = match.title || match.name;
+            
+            const headerClass = match.status === 'live' ? 'bg-danger text-white' : 
+                               match.status === 'completed' ? 'bg-success text-white' : 'bg-info text-white';
+            const badgeClass = match.status === 'live' ? 'bg-light text-danger' : 
+                              match.status === 'completed' ? 'bg-light text-success' : 'bg-light text-info';
+            
+            document.getElementById('matchHeader').className = `card-header d-flex justify-content-between align-items-center py-3 ${headerClass}`;
+            document.getElementById('matchHeader').innerHTML = `
+                <div>
+                    <h3 class="mb-0">${match.title || match.name}</h3>
+                    <p class="mb-0 mt-1 opacity-75"><i class="bi bi-geo-alt me-1"></i>${match.venue}</p>
+                </div>
+                <div class="text-end">
+                    <span class="badge ${badgeClass} fs-6">${match.matchType}</span>
+                    <div class="mt-2">
+                        <span class="badge bg-light ${badgeClass}">${match.statusText || (match.status.charAt(0).toUpperCase() + match.status.slice(1))}</span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('team1Name').innerHTML = `
+                ${match.tossWinner === match.team1.name ? '<i class="bi bi-coin me-2" title="Won toss"></i>' : ''}
+                ${match.team1.name}
+            `;
+            document.getElementById('team1Score').textContent = getScoreDisplay(match.team1);
+            document.getElementById('team1Overs').textContent = match.team1.overs ?? '-';
+            
+            if (match.team1.score > 0 && match.team1.overs > 0) {
+                const runRate = (match.team1.score / match.team1.overs).toFixed(2);
+                document.getElementById('team1RunRate').textContent = `Run Rate: ${runRate}`;
+            } else {
+                document.getElementById('team1RunRate').textContent = '';
+            }
+            
+            document.getElementById('team2Name').innerHTML = `
+                ${match.tossWinner === match.team2.name ? '<i class="bi bi-coin me-2" title="Won toss"></i>' : ''}
+                ${match.team2.name}
+            `;
+            document.getElementById('team2Score').textContent = getScoreDisplay(match.team2);
+            document.getElementById('team2Overs').textContent = match.team2.overs ?? '-';
+            
+            if (match.team2.score > 0 && match.team2.overs > 0) {
+                const runRate = (match.team2.score / match.team2.overs).toFixed(2);
+                document.getElementById('team2RunRate').textContent = `Run Rate: ${runRate}`;
+            } else {
+                document.getElementById('team2RunRate').textContent = '';
+            }
+            
+            const matchDate = new Date(match.date);
+            document.getElementById('matchDate').textContent = matchDate.toLocaleDateString('en-US', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
+            document.getElementById('matchTime').textContent = matchDate.toLocaleTimeString('en-US', { 
+                hour: '2-digit', minute: '2-digit' 
+            });
+            document.getElementById('matchVenue').textContent = match.venue;
+            document.getElementById('matchType').textContent = match.matchType;
+            
+            if (match.tossWinner) {
+                document.getElementById('matchToss').innerHTML = `
+                    ${match.tossWinner} won and chose to ${match.tossDecision || 'bat'}
+                `;
+            } else {
+                document.getElementById('matchToss').innerHTML = '<span class="text-muted">Not decided yet</span>';
+            }
+            
+            const statusBadgeClass = match.status === 'live' ? 'bg-danger' : 
+                                    match.status === 'completed' ? 'bg-success' : 'bg-info';
+            document.getElementById('matchStatus').innerHTML = `
+                <span class="badge ${statusBadgeClass}">${match.statusText || (match.status.charAt(0).toUpperCase() + match.status.slice(1))}</span>
+            `;
+            
+            document.getElementById('modalTeam1Name').textContent = match.team1.name;
+            document.getElementById('modalTeam2Name').textContent = match.team2.name;
+            document.getElementById('team1ScoreInput').value = match.team1.score ?? 0;
+            document.getElementById('team1WicketsInput').value = match.team1.wickets ?? 0;
+            document.getElementById('team1OversInput').value = match.team1.overs ?? 0;
+            document.getElementById('team2ScoreInput').value = match.team2.score ?? 0;
+            document.getElementById('team2WicketsInput').value = match.team2.wickets ?? 0;
+            document.getElementById('team2OversInput').value = match.team2.overs ?? 0;
+            document.getElementById('matchStatusInput').value = match.status;
+            document.getElementById('deleteMatchTitle').textContent = match.title || match.name;
+        }
+
+        function showError() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('matchContent').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+        }
+
+        document.getElementById('updateScoreForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const updateData = {
+                team1: {
+                    score: parseInt(document.getElementById('team1ScoreInput').value) || 0,
+                    wickets: parseInt(document.getElementById('team1WicketsInput').value) || 0,
+                    overs: parseFloat(document.getElementById('team1OversInput').value) || 0
+                },
+                team2: {
+                    score: parseInt(document.getElementById('team2ScoreInput').value) || 0,
+                    wickets: parseInt(document.getElementById('team2WicketsInput').value) || 0,
+                    overs: parseFloat(document.getElementById('team2OversInput').value) || 0
+                },
+                status: document.getElementById('matchStatusInput').value
+            };
+            
+            try {
+                const response = await fetch(`/api/matches/${matchId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('updateScoreModal')).hide();
+                    
+                    loadMatchDetails();
+                    
+                    alert('Score updated successfully!');
+                } else {
+                    alert('Error: ' + (result.error || 'Failed to update score'));
+                }
+            } catch (error) {
+                console.error('Error updating score:', error);
+                alert('Failed to update score. Please try again.');
+            }
+        });
+
+        document.getElementById('deleteMatchForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            try {
+                const response = await fetch(`/api/matches/${matchId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Match deleted successfully!');
+                    window.location.href = '/pages/matches.html';
+                } else {
+                    alert('Error: ' + (result.error || 'Failed to delete match'));
+                }
+            } catch (error) {
+                console.error('Error deleting match:', error);
+                alert('Failed to delete match. Please try again.');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            matchSource = getMatchSourceFromUrl();
+            if (!checkAuth()) {
+                redirectToLogin();
+                return;
+            }
+
+            loadMatchDetails();
+        });
+    </script>
+</body>
+</html>

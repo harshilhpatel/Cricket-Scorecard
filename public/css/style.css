@@ -1,0 +1,267 @@
+
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #0dcaf0;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    transform: translateY(-2px);
+}
+
+.hero-slide {
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 10px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.match-card {
+    overflow: hidden;
+}
+
+.match-card .card-header {
+    font-weight: 600;
+}
+
+.teams-score {
+    font-size: 1.1rem;
+}
+
+.teams-score .score {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.live-score-box {
+    border-left: 4px solid var(--danger-color);
+}
+
+.final-score {
+    border-left: 4px solid var(--success-color);
+}
+
+.stat-card {
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: scale(1.05);
+}
+
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+.modal-content {
+    border-radius: 15px;
+    border: none;
+}
+
+.modal-header {
+    border-radius: 15px 15px 0 0;
+}
+
+.pagination .page-link {
+    border-radius: 8px;
+    margin: 0 2px;
+    border: none;
+    color: var(--primary-color);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+footer {
+    display: none;
+    margin-top: auto;
+}
+
+body::after {
+    content: "\00A9 2026 Harshil Patel. All Rights Reserved.";
+    display: block;
+    width: fit-content;
+    margin: 0 auto 1.5rem;
+    padding: 0.3rem 0.5rem;
+    background-color: #000;
+    color: #fff;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 1rem;
+    line-height: 1.2;
+    flex-shrink: 0;
+}
+
+footer a:hover {
+    color: var(--primary-color) !important;
+}
+
+.sidebar {
+    min-height: calc(100vh - 56px);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.live-indicator {
+    animation: pulse 1.5s infinite;
+}
+
+@media (max-width: 768px) {
+    .hero-slide {
+        min-height: 300px;
+        text-align: center;
+    }
+    
+    .hero-slide .display-4 {
+        font-size: 2rem;
+    }
+    
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+}
+
+.empty-state i {
+    opacity: 0.5;
+}
+
+.error-page {
+    padding: 4rem 0;
+}
+
+.error-page .display-1 {
+    font-size: 8rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+@media (max-width: 576px) {
+    .error-page .display-1 {
+        font-size: 5rem;
+    }
+}
+
+@media print {
+    .navbar,
+    footer,
+    .btn {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+    }
+}

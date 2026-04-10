@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Cricket Easy Scorecard</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-trophy-fill text-warning me-2"></i>
+                Cricket Scorecard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="bi bi-house-door me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/live-scores.html">
+                            <i class="bi bi-broadcast me-1"></i>Live Scores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/matches.html">
+                            <i class="bi bi-calendar-event me-1"></i>Matches
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/about.html">
+                            <i class="bi bi-info-circle me-1"></i>About
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/pages/login.html">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary btn-sm text-white ms-lg-2 px-3" href="/pages/register.html">
+                            <i class="bi bi-person-plus me-1"></i>Register
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-md-5">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-header bg-primary text-white text-center py-4">
+                            <h3 class="mb-0"><i class="bi bi-box-arrow-in-right me-2"></i>Login</h3>
+                            <p class="mb-0 mt-2 opacity-75">Welcome back! Please sign in to continue.</p>
+                        </div>
+                        <div class="card-body p-4">
+                            <div id="errorAlert" class="alert alert-danger alert-dismissible fade show d-none" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i><span id="errorMessage"></span>
+                                <button type="button" class="btn-close" onclick="hideError()"></button>
+                            </div>
+                            
+                            <form id="loginForm" novalidate>
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">
+                                        <i class="bi bi-person me-1"></i>Username
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control form-control-lg" 
+                                        id="username" 
+                                        name="username" 
+                                        placeholder="Enter your username"
+                                        required
+                                        autofocus
+                                    >
+                                    <div class="invalid-feedback">Please enter your username.</div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="password" class="form-label">
+                                        <i class="bi bi-lock me-1"></i>Password
+                                    </label>
+                                    <div class="input-group">
+                                        <input 
+                                            type="password" 
+                                            class="form-control form-control-lg" 
+                                            id="password" 
+                                            name="password" 
+                                            placeholder="Enter your password"
+                                            required
+                                        >
+                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword" aria-label="Show password" aria-pressed="false">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter your password.</div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe">
+                                        <label class="form-check-label" for="rememberMe">
+                                            Remember me
+                                        </label>
+                                    </div>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                                        Forgot password?
+                                    </a>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg" id="loginButton">
+                                        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="text-center">
+                                <p class="mb-0">Don't have an account? 
+                                    <a href="/pages/register.html" class="text-decoration-none fw-bold">Sign up</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4 border-0 bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title"><i class="bi bi-info-circle me-2"></i>Seeded Demo Credentials</h6>
+                            <p class="text-muted small mb-3">
+                                These accounts exist only after running <code>node seed.js</code> against the active database.
+                            </p>
+                            <div class="row">
+                                <div class="col-6">
+                                    <small class="text-muted">Admin:</small>
+                                    <p class="mb-0"><code>admin / admin123</code></p>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Member:</small>
+                                    <p class="mb-0"><code>member / member123</code></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-key me-2"></i>Reset Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">Enter your email address and we'll send you instructions to reset your password.</p>
+                    <form>
+                        <div class="mb-3">
+                            <label for="resetEmail" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="resetEmail" placeholder="your@email.com" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="alert('Password reset link sent!')">Send Reset Link</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="bi bi-trophy-fill text-warning me-2"></i>Cricket Scorecard</h5>
+                    <p class="text-muted">Your ultimate destination for live cricket scores.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-muted text-decoration-none">Home</a></li>
+                        <li><a href="/pages/live-scores.html" class="text-muted text-decoration-none">Live Scores</a></li>
+                        <li><a href="/pages/matches.html" class="text-muted text-decoration-none">Matches</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <p class="text-muted mt-3 mb-0">&copy; 2026 Cricket Scorecard</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+                this.setAttribute('aria-label', 'Hide password');
+                this.setAttribute('aria-pressed', 'true');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+                this.setAttribute('aria-label', 'Show password');
+                this.setAttribute('aria-pressed', 'false');
+            }
+        });
+
+        function showError(message) {
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorAlert.classList.remove('d-none');
+        }
+
+        function hideError() {
+            document.getElementById('errorAlert').classList.add('d-none');
+        }
+
+        function getReturnToUrl() {
+            const returnTo = new URLSearchParams(window.location.search).get('returnTo');
+
+            if (returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')) {
+                return returnTo;
+            }
+
+            return '/';
+        }
+
+        function preserveReturnToOnLinks() {
+            const returnTo = getReturnToUrl();
+
+            if (returnTo === '/') {
+                return;
+            }
+
+            document.querySelectorAll('a[href="/pages/register.html"]').forEach((link) => {
+                link.href = `/pages/register.html?returnTo=${encodeURIComponent(returnTo)}`;
+            });
+        }
+
+        async function syncSessionAndRedirectIfAuthenticated() {
+            try {
+                const response = await fetch('/api/session', {
+                    cache: 'no-store'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to validate session');
+                }
+
+                const result = await response.json();
+
+                if (result.success && result.user) {
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    window.location.replace(getReturnToUrl());
+                    return;
+                }
+            } catch (error) {
+                console.warn('Session validation failed:', error);
+            }
+
+            localStorage.removeItem('user');
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            hideError();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showError('Please enter both username and password');
+                return;
+            }
+            
+            const loginButton = document.getElementById('loginButton');
+            const originalText = loginButton.innerHTML;
+            loginButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Signing in...';
+            loginButton.disabled = true;
+            
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    
+                    window.location.href = getReturnToUrl();
+                } else {
+                    showError(result.message || 'Invalid username or password');
+                    loginButton.innerHTML = originalText;
+                    loginButton.disabled = false;
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('An error occurred. Please try again.');
+                loginButton.innerHTML = originalText;
+                loginButton.disabled = false;
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            preserveReturnToOnLinks();
+            syncSessionAndRedirectIfAuthenticated();
+        });
+    </script>
+</body>
+</html>

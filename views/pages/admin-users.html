@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management | Cricket Easy Scorecard</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-trophy-fill text-warning me-2"></i>
+                Cricket Scorecard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="bi bi-house-door me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/live-scores.html">
+                            <i class="bi bi-broadcast me-1"></i>Live Scores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/matches.html">
+                            <i class="bi bi-calendar-event me-1"></i>Matches
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav" id="authNav">
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1><i class="bi bi-people me-2"></i>User Management</h1>
+                    <p class="text-muted mb-0">Manage user accounts and roles</p>
+                </div>
+                <a href="/pages/admin-dashboard.html" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Filter by Role</label>
+                            <select id="roleFilter" class="form-select" onchange="loadUsers()">
+                                <option value="">All Roles</option>
+                                <option value="admin">Admin</option>
+                                <option value="member">Member</option>
+                                <option value="guest">Guest</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Last Login</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                                <tr>
+                                    <td colspan="7" class="text-center py-5">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <p class="text-muted mt-3">Loading users...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="mt-4" id="paginationNav">
+                <ul class="pagination justify-content-center" id="paginationList">
+                </ul>
+            </nav>
+        </div>
+    </main>
+
+    <div class="modal fade" id="editRoleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="editRoleForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit User Role</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>User: <strong id="editUsername">-</strong></p>
+                        <input type="hidden" id="editUserId">
+                        <div class="mb-3">
+                            <label class="form-label">Role</label>
+                            <select class="form-select" id="editRoleSelect">
+                                <option value="admin">Admin</option>
+                                <option value="member">Member</option>
+                                <option value="guest">Guest</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="bi bi-trophy-fill text-warning me-2"></i>Cricket Scorecard</h5>
+                    <p class="text-muted">Your ultimate destination for live cricket scores.</p>
+                </div>
+                <div class="col-md-4">
+                    <p class="text-muted mt-3 mb-0">&copy; 2026 Cricket Scorecard</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+        let currentUserId = null;
+
+        function checkAuth() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (!user || user.role !== 'admin') {
+                alert('Access denied. Admin only.');
+                window.location.href = '/';
+                return;
+            }
+            
+            const authNav = document.getElementById('authNav');
+            authNav.innerHTML = `
+                <li class="nav-item">
+                    <a class="nav-link" href="/pages/admin-dashboard.html">
+                        <i class="bi bi-shield-lock me-1"></i>Admin
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle me-1"></i>${user.username}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><span class="dropdown-item-text text-muted">${user.fullName}</span></li>
+                        <li><span class="dropdown-item-text text-muted small">Role: ${user.role}</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                    </ul>
+                </li>
+            `;
+        }
+
+        async function logout() {
+            try {
+                await fetch('/logout', { cache: 'no-store' });
+            } catch (error) {
+                console.warn('Logout request failed:', error);
+            }
+
+            localStorage.removeItem('user');
+            window.location.href = '/';
+        }
+
+        async function loadUsers(page = 1) {
+            const container = document.getElementById('usersTable');
+            const roleFilter = document.getElementById('roleFilter').value;
+            
+            container.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="text-muted mt-3">Loading users...</p>
+                    </td>
+                </tr>
+            `;
+            
+            try {
+                let url = `/api/users?page=${page}`;
+                if (roleFilter) url += `&role=${roleFilter}`;
+                
+                const response = await fetch(url);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const users = result.data;
+                    const meta = result.meta;
+                    
+                    currentPage = page;
+                    totalPages = Math.ceil(meta.total / meta.limit) || 1;
+                    
+                    if (users.length > 0) {
+                        container.innerHTML = users.map(user => `
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                            ${user.username.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">${user.fullName || user.username}</div>
+                                            <small class="text-muted">@${user.username}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>${user.email}</td>
+                                <td>
+                                    <span class="badge ${user.role === 'admin' ? 'bg-danger' : user.role === 'member' ? 'bg-primary' : 'bg-secondary'}">${user.role}</span>
+                                </td>
+                                <td>
+                                    ${user.loginAttempts >= 5 ? 
+                                        '<span class="badge bg-warning text-dark"><i class="bi bi-lock me-1"></i>Locked</span>' : 
+                                        '<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Active</span>'}
+                                </td>
+                                <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+                                <td>${user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : '<span class="text-muted">Never</span>'}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="openEditModal('${user._id}', '${user.username}', '${user.role}')">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('');
+                        
+                        updatePagination(meta.total, meta.limit, page);
+                    } else {
+                        container.innerHTML = `
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    <i class="bi bi-people display-1 text-muted"></i>
+                                    <p class="text-muted mt-3">No users found</p>
+                                </td>
+                            </tr>
+                        `;
+                        document.getElementById('paginationNav').style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
+                            <p class="text-muted mt-3">Failed to load users</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function updatePagination(total, limit, currentPage) {
+            const paginationList = document.getElementById('paginationList');
+            const totalPages = Math.ceil(total / limit) || 1;
+            
+            if (totalPages <= 1) {
+                document.getElementById('paginationNav').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('paginationNav').style.display = 'block';
+            
+            let html = '';
+            
+            html += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="goToPage(${currentPage - 1}); return false;">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+            `;
+            
+            for (let i = 1; i <= totalPages; i++) {
+                html += `
+                    <li class="page-item ${currentPage === i ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="goToPage(${i}); return false;">${i}</a>
+                    </li>
+                `;
+            }
+            
+            html += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="goToPage(${currentPage + 1}); return false;">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            `;
+            
+            paginationList.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            if (page < 1 || page > totalPages) return;
+            loadUsers(page);
+        }
+
+        function openEditModal(userId, username, role) {
+            currentUserId = userId;
+            document.getElementById('editUserId').value = userId;
+            document.getElementById('editUsername').textContent = username;
+            document.getElementById('editRoleSelect').value = role;
+            
+            const modal = new bootstrap.Modal(document.getElementById('editRoleModal'));
+            modal.show();
+        }
+
+        document.getElementById('editRoleForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const role = document.getElementById('editRoleSelect').value;
+            
+            try {
+                const response = await fetch(`/admin/users/${currentUserId}/role`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ role })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('editRoleModal')).hide();
+                    loadUsers(currentPage);
+                    alert('User role updated successfully!');
+                } else {
+                    alert('Error: ' + (result.error || 'Failed to update role'));
+                }
+            } catch (error) {
+                console.error('Error updating role:', error);
+                alert('Failed to update role');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadUsers();
+        });
+    </script>
+</body>
+</html>

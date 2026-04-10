@@ -1,0 +1,29 @@
+{
+  "name": "cricket-scorecard",
+  "version": "1.0.0",
+  "description": "Cricket Easy Scorecard - Full Stack Web Application",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cricket",
+    "scorecard",
+    "nodejs",
+    "mongodb",
+    "express"
+  ],
+  "author": "Student",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mongodb": "^6.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
