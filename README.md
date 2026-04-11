@@ -39,6 +39,7 @@ Cricket Easy Scorecard is a full-stack CPSC 2650 final project built with HTML5,
 
 - This project folder is tracked in Git and connected to the GitHub remote repository for submission.
 - The repository now includes commit history on `main`; continue making clear commits for fixes or improvements before final submission.
+- This is a solo submission by Harshil Patel, so all commits are expected to come from the same Git identity.
 
 ## Project Structure
 
@@ -116,7 +117,7 @@ Important: `node seed.js` clears existing `users`, `matches`, `teams`, and `logs
 
 ## Notes
 
-- If `CRICKET_API_KEY` is missing or the external provider fails, the app can fall back to mock or alternate data paths depending on the endpoint.
+- If `CRICKET_API_KEY` is missing, or if the external provider fails, the app falls back to built-in mock cricket data for the external-data pages.
 - Login and registration depend on a working MongoDB connection.
 - The current site serves HTML pages from `views/pages`; the README does not describe the older EJS layout because that is not the current runtime structure.
 

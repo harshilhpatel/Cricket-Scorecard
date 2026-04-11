@@ -51,7 +51,7 @@ Open `http://localhost:3000` in your browser after the server starts.
 
 - `SESSION_SECRET` is used for session security.
 - `MONGODB_URI` is optional if you want to use the default local MongoDB connection.
-- `CRICKET_API_KEY` is optional. Without it, external live data may fall back to mock or alternate data.
+- `CRICKET_API_KEY` is optional. Without it, the app uses built-in mock cricket data for the external-data pages.
 - `PORT` defaults to `3000` if you do not set it.
 
 ## Common Issues
@@ -64,7 +64,7 @@ Login or signup fails:
 
 Live cricket data does not load:
 
-- Add a valid `CRICKET_API_KEY` to `.env`.
+- Add a valid `CRICKET_API_KEY` to `.env` if you want live provider data instead of the built-in mock feed.
 - Restart the server after changing `.env`.
 
 Port `3000` is busy:

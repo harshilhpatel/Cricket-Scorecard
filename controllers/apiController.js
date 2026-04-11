@@ -50,6 +50,8 @@ const getUnavailableScoreDisplay = (status = 'upcoming') => {
     return 'Score unavailable';
 };
 
+const cloneJson = (value) => JSON.parse(JSON.stringify(value));
+
 
 const getMatches = async (req, res) => {
     try {
@@ -486,6 +488,173 @@ const normalizeLocalMatch = (match) => {
     };
 };
 
+const buildMockExternalMatch = ({
+    id,
+    title,
+    matchType,
+    status,
+    statusText,
+    venue,
+    series,
+    date,
+    tossWinner = '',
+    tossDecision = '',
+    result = '',
+    team1,
+    team2
+}) => ({
+    id,
+    title,
+    name: title,
+    matchType: normalizeMatchType(matchType, title),
+    status,
+    statusLabel: status.toUpperCase(),
+    statusText,
+    venue,
+    series,
+    date,
+    tossWinner,
+    tossDecision,
+    result: result || (status === 'completed' ? statusText : ''),
+    source: 'external',
+    detailUrl: `/pages/match-details.html?id=${encodeURIComponent(id)}&source=external`,
+    team1: {
+        name: team1.name,
+        shortName: team1.shortName || '',
+        img: team1.img || '',
+        score: team1.score ?? null,
+        wickets: team1.wickets ?? null,
+        overs: team1.overs ?? null,
+        scoreDisplay: team1.scoreDisplay || formatLocalScoreDisplay(team1, status)
+    },
+    team2: {
+        name: team2.name,
+        shortName: team2.shortName || '',
+        img: team2.img || '',
+        score: team2.score ?? null,
+        wickets: team2.wickets ?? null,
+        overs: team2.overs ?? null,
+        scoreDisplay: team2.scoreDisplay || formatLocalScoreDisplay(team2, status)
+    }
+});
+
+const MOCK_EXTERNAL_MATCHES = Object.freeze([
+    buildMockExternalMatch({
+        id: 'mock-live-ipl-2026-01',
+        title: 'Mumbai Indians vs Chennai Super Kings',
+        matchType: 'T20',
+        status: 'live',
+        statusText: 'Chennai Super Kings need 24 runs from 18 balls',
+        venue: 'Wankhede Stadium, Mumbai',
+        series: 'Indian Premier League 2026',
+        date: '2026-04-10T19:30:00Z',
+        tossWinner: 'Mumbai Indians',
+        tossDecision: 'bat',
+        team1: { name: 'Mumbai Indians', shortName: 'MI', score: 181, wickets: 6, overs: 20 },
+        team2: { name: 'Chennai Super Kings', shortName: 'CSK', score: 158, wickets: 4, overs: 17 }
+    }),
+    buildMockExternalMatch({
+        id: 'mock-upcoming-test-2026-01',
+        title: 'India vs Australia',
+        matchType: 'TEST',
+        status: 'upcoming',
+        statusText: 'Starts at 10:00 AM',
+        venue: 'Narendra Modi Stadium, Ahmedabad',
+        series: 'Border-Gavaskar Trophy 2026',
+        date: '2026-04-12T17:00:00Z',
+        team1: { name: 'India', shortName: 'IND' },
+        team2: { name: 'Australia', shortName: 'AUS' }
+    }),
+    buildMockExternalMatch({
+        id: 'mock-upcoming-t20-2026-02',
+        title: 'England vs Pakistan',
+        matchType: 'T20',
+        status: 'upcoming',
+        statusText: 'Starts at 02:30 PM',
+        venue: 'Old Trafford, Manchester',
+        series: 'England vs Pakistan T20I Series 2026',
+        date: '2026-04-11T21:30:00Z',
+        team1: { name: 'England', shortName: 'ENG' },
+        team2: { name: 'Pakistan', shortName: 'PAK' }
+    }),
+    buildMockExternalMatch({
+        id: 'mock-upcoming-odi-2026-03',
+        title: 'South Africa vs New Zealand',
+        matchType: 'ODI',
+        status: 'upcoming',
+        statusText: 'Starts at 09:00 AM',
+        venue: 'Newlands, Cape Town',
+        series: 'ODI Tri-Series 2026',
+        date: '2026-04-13T16:00:00Z',
+        team1: { name: 'South Africa', shortName: 'SA' },
+        team2: { name: 'New Zealand', shortName: 'NZ' }
+    }),
+    buildMockExternalMatch({
+        id: 'mock-completed-ipl-2026-04',
+        title: 'Kolkata Knight Riders vs Lucknow Super Giants',
+        matchType: 'T20',
+        status: 'completed',
+        statusText: 'Lucknow Super Giants won by 3 wkts',
+        venue: 'Eden Gardens, Kolkata',
+        series: 'Indian Premier League 2026',
+        date: '2026-04-09T14:00:00Z',
+        result: 'Lucknow Super Giants won by 3 wkts',
+        team1: { name: 'Kolkata Knight Riders', shortName: 'KKR', score: 181, wickets: 4, overs: 20 },
+        team2: { name: 'Lucknow Super Giants', shortName: 'LSG', score: 182, wickets: 7, overs: 20 }
+    }),
+    buildMockExternalMatch({
+        id: 'mock-completed-psl-2026-05',
+        title: 'Karachi Kings vs Peshawar Zalmi',
+        matchType: 'T20',
+        status: 'completed',
+        statusText: 'Peshawar Zalmi won by 159 runs',
+        venue: 'National Stadium, Karachi',
+        series: 'Pakistan Super League 2026',
+        date: '2026-04-09T13:00:00Z',
+        result: 'Peshawar Zalmi won by 159 runs',
+        team1: { name: 'Karachi Kings', shortName: 'KK', score: 87, wickets: 10, overs: '16.1' },
+        team2: { name: 'Peshawar Zalmi', shortName: 'PZ', score: 246, wickets: 3, overs: 20 }
+    }),
+    buildMockExternalMatch({
+        id: 'mock-completed-women-2026-06',
+        title: 'Malawi Women vs Zambia Women',
+        matchType: 'T20',
+        status: 'completed',
+        statusText: 'Malawi Women won by 53 runs',
+        venue: 'Lusaka Cricket Oval, Lusaka',
+        series: "Kalahari Women's T20I Tournament, 2026",
+        date: '2026-04-10T12:00:00Z',
+        result: 'Malawi Women won by 53 runs',
+        team1: { name: 'Malawi Women', shortName: 'MW', score: 86, wickets: 10, overs: 20 },
+        team2: { name: 'Zambia Women', shortName: 'ZW', score: 33, wickets: 10, overs: 14 }
+    })
+]);
+
+const MOCK_EXTERNAL_SERIES = Object.freeze([
+    {
+        id: 'mock-series-ipl-2026',
+        name: 'Indian Premier League 2026',
+        matchType: 'T20',
+        startDate: '2026-03-28',
+        endDate: '2026-05-26'
+    },
+    {
+        id: 'mock-series-bgt-2026',
+        name: 'Border-Gavaskar Trophy 2026',
+        matchType: 'TEST',
+        startDate: '2026-04-12',
+        endDate: '2026-05-04'
+    }
+]);
+
+const getMockExternalMatches = () =>
+    sortExternalMatches(cloneJson(MOCK_EXTERNAL_MATCHES));
+
+const getMockExternalMatchById = (id) =>
+    getMockExternalMatches().find(match => match.id === id) || null;
+
+const getMockSeries = () => cloneJson(MOCK_EXTERNAL_SERIES);
+
 const mergeExternalMatch = (scoreFeedMatch, matchInfoMatch, id) => {
     const baseMatch = matchInfoMatch || scoreFeedMatch;
     const status = matchInfoMatch?.status || scoreFeedMatch?.status || 'upcoming';
@@ -632,18 +801,89 @@ const getScoreFeedMatches = async () => {
     return sortExternalMatches(matches);
 };
 
+const getScoreFeedMatchesWithFallback = async () => {
+    if (!config.CRICKET_API_KEY) {
+        return {
+            matches: getMockExternalMatches(),
+            source: 'mock'
+        };
+    }
+
+    try {
+        return {
+            matches: await getScoreFeedMatches(),
+            source: 'external'
+        };
+    } catch (error) {
+        console.warn('Falling back to built-in mock cricket data:', error.message);
+
+        return {
+            matches: getMockExternalMatches(),
+            source: 'mock'
+        };
+    }
+};
+
+const getMatchWithFallback = async (id) => {
+    const mockMatch = getMockExternalMatchById(id);
+
+    if (!config.CRICKET_API_KEY) {
+        return {
+            match: mockMatch,
+            source: 'mock'
+        };
+    }
+
+    try {
+        const [scoreFeedMatches, matchInfoResponse] = await Promise.all([
+            getScoreFeedMatches(),
+            fetchCricApi('match_info', { id })
+        ]);
+        const scoreFeedMatch = scoreFeedMatches.find(match => match.id === id) || null;
+        const matchInfoMatch = matchInfoResponse.data ? normalizeMatchInfo(matchInfoResponse.data) : null;
+
+        return {
+            match: scoreFeedMatch || matchInfoMatch ? mergeExternalMatch(scoreFeedMatch, matchInfoMatch, id) : null,
+            source: 'external'
+        };
+    } catch (error) {
+        console.warn(`Falling back to built-in mock match data for ${id}:`, error.message);
+
+        return {
+            match: mockMatch,
+            source: 'mock'
+        };
+    }
+};
+
+const getSeriesWithFallback = async (offset) => {
+    if (!config.CRICKET_API_KEY) {
+        return {
+            data: getMockSeries(),
+            source: 'mock'
+        };
+    }
+
+    try {
+        return {
+            data: await fetchCricApi('series', { offset }),
+            source: 'external'
+        };
+    } catch (error) {
+        console.warn('Falling back to built-in mock series data:', error.message);
+
+        return {
+            data: getMockSeries(),
+            source: 'mock'
+        };
+    }
+};
+
 const getExternalCricketData = async (req, res) => {
     try {
         const { endpoint = 'dashboard', id, status = '', type = '' } = req.query;
         const isGuest = !isAuthenticatedRequest(req);
         const protectedEndpoints = new Set(['matches', 'match', 'series']);
-
-        if (!config.CRICKET_API_KEY) {
-            return res.status(500).json({
-                success: false,
-                error: 'CRICKET_API_KEY is not configured'
-            });
-        }
 
         if (protectedEndpoints.has(endpoint) && isGuest) {
             return res.status(401).json(getProtectedApiError());
@@ -651,7 +891,7 @@ const getExternalCricketData = async (req, res) => {
 
         switch (endpoint) {
             case 'dashboard': {
-                const matches = await getScoreFeedMatches();
+                const { matches, source } = await getScoreFeedMatchesWithFallback();
                 const liveMatches = sortExternalMatches(
                     matches.filter(match => match.status === 'live'),
                     'live'
@@ -678,7 +918,7 @@ const getExternalCricketData = async (req, res) => {
                             completed: completedMatches.length
                         }
                     },
-                    source: 'external'
+                    source
                 });
             }
             case 'matches':
@@ -691,8 +931,8 @@ const getExternalCricketData = async (req, res) => {
                 if (status) localQuery.status = status;
                 if (type) localQuery.matchType = type;
 
-                const [externalMatches, localMatches] = await Promise.all([
-                    getScoreFeedMatches(),
+                const [{ matches: externalMatches, source }, localMatches] = await Promise.all([
+                    getScoreFeedMatchesWithFallback(),
                     MatchModel.list(localQuery, { sort: { date: -1 } })
                 ]);
                 const filteredMatches = sortExternalMatches(
@@ -712,7 +952,7 @@ const getExternalCricketData = async (req, res) => {
                         skip,
                         page
                     },
-                    source: 'external'
+                    source
                 });
             }
             case 'match': {
@@ -723,14 +963,9 @@ const getExternalCricketData = async (req, res) => {
                     });
                 }
 
-                const [scoreFeedMatches, matchInfoResponse] = await Promise.all([
-                    getScoreFeedMatches(),
-                    fetchCricApi('match_info', { id })
-                ]);
-                const scoreFeedMatch = scoreFeedMatches.find(match => match.id === id) || null;
-                const matchInfoMatch = matchInfoResponse.data ? normalizeMatchInfo(matchInfoResponse.data) : null;
+                const { match, source } = await getMatchWithFallback(id);
 
-                if (!scoreFeedMatch && !matchInfoMatch) {
+                if (!match) {
                     return res.status(404).json({
                         success: false,
                         error: 'Match not found'
@@ -739,17 +974,17 @@ const getExternalCricketData = async (req, res) => {
 
                 return res.json({
                     success: true,
-                    data: mergeExternalMatch(scoreFeedMatch, matchInfoMatch, id),
-                    source: 'external'
+                    data: match,
+                    source
                 });
             }
             case 'series': {
-                const data = await fetchCricApi('series', { offset: req.query.offset || 0 });
+                const { data, source } = await getSeriesWithFallback(req.query.offset || 0);
 
                 return res.json({
                     success: true,
                     data,
-                    source: 'external'
+                    source
                 });
             }
             default:
