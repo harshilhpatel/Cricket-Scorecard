@@ -29,9 +29,6 @@ Seeded accounts:
 
 - `admin / admin123`
 - `member / member123`
-- `alice / alice123`
-- `bob / bob123`
-- `charlie / charlie123`
 
 Important: the seed script deletes existing `users`, `matches`, `teams`, and `logs` before recreating demo data.
 
