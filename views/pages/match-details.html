@@ -386,7 +386,7 @@
             window.location.href = '/';
         }
 
-        function getScoreDisplay(team) {
+        function getScoreDisplay(team, status = '') {
             if (team?.scoreDisplay) {
                 return team.scoreDisplay;
             }
@@ -405,7 +405,7 @@
                 return scoreText;
             }
 
-            return 'Yet to bat';
+            return status === 'completed' ? 'Result only' : 'Yet to bat';
         }
 
         async function loadMatchDetails() {
@@ -471,7 +471,7 @@
                 ${match.tossWinner === match.team1.name ? '<i class="bi bi-coin me-2" title="Won toss"></i>' : ''}
                 ${match.team1.name}
             `;
-            document.getElementById('team1Score').textContent = getScoreDisplay(match.team1);
+            document.getElementById('team1Score').textContent = getScoreDisplay(match.team1, match.status);
             document.getElementById('team1Overs').textContent = match.team1.overs ?? '-';
             
             if (match.team1.score > 0 && match.team1.overs > 0) {
@@ -485,7 +485,7 @@
                 ${match.tossWinner === match.team2.name ? '<i class="bi bi-coin me-2" title="Won toss"></i>' : ''}
                 ${match.team2.name}
             `;
-            document.getElementById('team2Score').textContent = getScoreDisplay(match.team2);
+            document.getElementById('team2Score').textContent = getScoreDisplay(match.team2, match.status);
             document.getElementById('team2Overs').textContent = match.team2.overs ?? '-';
             
             if (match.team2.score > 0 && match.team2.overs > 0) {

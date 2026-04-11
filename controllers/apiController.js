@@ -38,6 +38,18 @@ const getDashboardLimit = (value, authenticatedDefault, guestCap, isGuest) => {
     return parsed;
 };
 
+const getUnavailableScoreDisplay = (status = 'upcoming') => {
+    if (status === 'upcoming') {
+        return 'Yet to bat';
+    }
+
+    if (status === 'completed') {
+        return 'Result only';
+    }
+
+    return 'Score unavailable';
+};
+
 
 const getMatches = async (req, res) => {
     try {
@@ -264,7 +276,7 @@ const getDateValue = (dateString) => {
 
 const formatLocalScoreDisplay = (team = {}, status = 'upcoming') => {
     if (team.score === undefined || team.score === null) {
-        return status === 'upcoming' ? 'Yet to bat' : 'Score unavailable';
+        return getUnavailableScoreDisplay(status);
     }
 
     let scoreText = `${team.score}`;
@@ -417,7 +429,7 @@ const normalizeScoreFeedMatch = (match) => {
             score: null,
             wickets: null,
             overs: null,
-            scoreDisplay: match.t1s || (status === 'upcoming' ? 'Yet to bat' : 'Score unavailable')
+            scoreDisplay: match.t1s || getUnavailableScoreDisplay(status)
         },
         team2: {
             name: team2.name,
@@ -426,7 +438,7 @@ const normalizeScoreFeedMatch = (match) => {
             score: null,
             wickets: null,
             overs: null,
-            scoreDisplay: match.t2s || (status === 'upcoming' ? 'Yet to bat' : 'Score unavailable')
+            scoreDisplay: match.t2s || getUnavailableScoreDisplay(status)
         }
     };
 };
@@ -503,7 +515,7 @@ const mergeExternalMatch = (scoreFeedMatch, matchInfoMatch, id) => {
             scoreDisplay:
                 scoreFeedMatch?.team1?.scoreDisplay ||
                 matchInfoMatch?.team1?.scoreDisplay ||
-                (status === 'upcoming' ? 'Yet to bat' : 'Score unavailable')
+                getUnavailableScoreDisplay(status)
         },
         team2: {
             ...(scoreFeedMatch?.team2 || {}),
@@ -514,7 +526,7 @@ const mergeExternalMatch = (scoreFeedMatch, matchInfoMatch, id) => {
             scoreDisplay:
                 scoreFeedMatch?.team2?.scoreDisplay ||
                 matchInfoMatch?.team2?.scoreDisplay ||
-                (status === 'upcoming' ? 'Yet to bat' : 'Score unavailable')
+                getUnavailableScoreDisplay(status)
         }
     };
 };
