@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -235,7 +235,7 @@
                     <div class="card match-card h-100 border-0 shadow-sm">
                         <div class="card-header d-flex justify-content-between align-items-center ${headerClasses}">
                             <span>${match.statusLabel}</span>
-                            <span class="badge bg-light ${badgeClasses}">${match.matchType}</span>
+                            <span class="badge text-bg-light ${badgeClasses}">${match.matchType}</span>
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">${match.title}</h5>
@@ -243,7 +243,7 @@
                             <p class="text-muted small mb-2"><i class="bi bi-calendar me-1"></i>${formatMatchDate(match.date)}</p>
                             <p class="small text-muted mb-3">${match.statusText}</p>
 
-                            <div class="teams-score bg-light p-3 rounded">
+                            <div class="teams-score  p-3 rounded">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <span class="fw-bold">${match.team1.name}</span>
                                     <span class="score text-end">${match.team1.scoreDisplay}</span>
