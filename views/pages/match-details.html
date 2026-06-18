@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -104,7 +104,7 @@
                             <div class="card-header bg-primary text-white">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0" id="team1Name">Team 1</h5>
-                                    <span class="badge bg-light text-primary" id="team1Country"></span>
+                                    <span class="badge text-bg-light text-primary" id="team1Country"></span>
                                 </div>
                             </div>
                             <div class="card-body text-center py-4">
@@ -120,7 +120,7 @@
                             <div class="card-header bg-success text-white">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0" id="team2Name">Team 2</h5>
-                                    <span class="badge bg-light text-success" id="team2Country"></span>
+                                    <span class="badge text-bg-light text-success" id="team2Country"></span>
                                 </div>
                             </div>
                             <div class="card-body text-center py-4">
@@ -450,8 +450,8 @@
             
             const headerClass = match.status === 'live' ? 'bg-danger text-white' : 
                                match.status === 'completed' ? 'bg-success text-white' : 'bg-info text-white';
-            const badgeClass = match.status === 'live' ? 'bg-light text-danger' : 
-                              match.status === 'completed' ? 'bg-light text-success' : 'bg-light text-info';
+            const badgeClass = match.status === 'live' ? 'text-bg-light text-danger' :
+                              match.status === 'completed' ? 'text-bg-light text-success' : 'text-bg-light text-info';
             
             document.getElementById('matchHeader').className = `card-header d-flex justify-content-between align-items-center py-3 ${headerClass}`;
             document.getElementById('matchHeader').innerHTML = `
@@ -462,7 +462,7 @@
                 <div class="text-end">
                     <span class="badge ${badgeClass} fs-6">${match.matchType}</span>
                     <div class="mt-2">
-                        <span class="badge bg-light ${badgeClass}">${match.statusText || (match.status.charAt(0).toUpperCase() + match.status.slice(1))}</span>
+                        <span class="badge ${badgeClass}">${match.statusText || (match.status.charAt(0).toUpperCase() + match.status.slice(1))}</span>
                     </div>
                 </div>
             `;

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -262,7 +262,7 @@
                                     </td>
                                     <td><code>${log.url}</code></td>
                                     <td>${log.username}</td>
-                                    <td><span class="badge bg-light text-dark">${log.role}</span></td>
+                                    <td><span class="badge text-bg-light">${log.role}</span></td>
                                     <td>
                                         ${log.responseStatus >= 200 && log.responseStatus < 300 ? 
                                             `<span class="badge bg-success">${log.responseStatus}</span>` : 
